@@ -17,5 +17,5 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideApiService(apiService: PokemonApiService) = PokemonRetrofitClient.create()
+    fun provideApiService(): PokemonApiService = PokemonRetrofitClient.create()
 }
