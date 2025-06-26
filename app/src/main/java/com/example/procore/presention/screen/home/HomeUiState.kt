@@ -1,4 +1,4 @@
-package com.example.procore.presention.home
+package com.example.procore.presention.screen.home
 
 import com.example.procore.domin.model.Pokemon
 
@@ -6,16 +6,15 @@ import com.example.procore.domin.model.Pokemon
  * Created by Aziza Helmy on 25/06/2025.
  */
 data class HomeUiState(
-    val images: List<PokemonUiState> = emptyList(),
+    val pokemons: List<PokemonUiState> = emptyList(),
     val isLoading: Boolean = true,
+    val isError: Boolean = false,
     val error: String = ""
-
 )
-
 
 data class PokemonUiState(val image: String)
 
 
-fun List<Pokemon>.toUiState = this.map {
-
+fun List<Pokemon>.toUiState() = this.map {
+    PokemonUiState(image = it.image)
 }
