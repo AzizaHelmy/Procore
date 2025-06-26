@@ -1,6 +1,6 @@
 package com.example.procore.data.source.remote.network
 
-import com.example.procore.data.source.remote.model.PokemonDto
+import com.example.procore.data.source.remote.dto.PokemonDto
 import retrofit2.Response
 import retrofit2.http.GET
 

@@ -15,7 +15,7 @@
         android:theme="@style/Theme.Procore"
         tools:targetApi="31">
         <activity
-            android:name=".presention.screen.MainActivity"
+            android:name=".presention.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Procore">

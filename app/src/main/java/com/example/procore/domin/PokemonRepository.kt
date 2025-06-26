@@ -1,6 +1,6 @@
 package com.example.procore.domin
 
-import com.example.procore.domin.model.Pokemon
+import com.example.procore.domin.entity.Pokemon
 
 /**
  * Created by Aziza Helmy on 25/06/2025.

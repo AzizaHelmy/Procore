@@ -1,4 +1,4 @@
-package com.example.procore.data.source.remote.model
+package com.example.procore.data.source.remote.dto
 
 
 import com.google.gson.annotations.SerializedName

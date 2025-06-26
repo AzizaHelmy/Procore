@@ -3,7 +3,7 @@ package com.example.procore.data.repostiory
 import com.example.procore.data.source.remote.mapper.toEntity
 import com.example.procore.data.source.remote.network.PokemonApiService
 import com.example.procore.domin.PokemonRepository
-import com.example.procore.domin.model.Pokemon
+import com.example.procore.domin.entity.Pokemon
 import javax.inject.Inject
 
 /**

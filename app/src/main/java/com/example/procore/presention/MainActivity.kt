@@ -1,4 +1,4 @@
-package com.example.procore.presention.screen
+package com.example.procore.presention
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

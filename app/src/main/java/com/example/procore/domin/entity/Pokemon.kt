@@ -1,4 +1,4 @@
-package com.example.procore.domin.model
+package com.example.procore.domin.entity
 
 /**
  * Created by Aziza Helmy on 25/06/2025.
