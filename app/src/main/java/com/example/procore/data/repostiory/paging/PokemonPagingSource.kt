@@ -22,7 +22,7 @@ class PokemonPagingSource @Inject constructor(val pokemonApiService: PokemonApiS
             return LoadResult.Page(
                 data = response.body()?.toEntity().orEmpty(),
                 prevKey = if (pageNo == 1) null else pageNo - 1,
-                nextKey = pageNo
+                nextKey = pageNo + 1
             )
         } catch (e: Exception) {
             return LoadResult.Error(e)
