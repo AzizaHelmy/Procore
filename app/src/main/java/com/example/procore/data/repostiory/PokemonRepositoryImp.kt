@@ -1,9 +1,13 @@
 package com.example.procore.data.repostiory
 
-import com.example.procore.data.source.remote.mapper.toEntity
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import com.example.procore.data.repostiory.paging.PokemonPagingSource
 import com.example.procore.data.source.remote.network.PokemonApiService
 import com.example.procore.domin.PokemonRepository
 import com.example.procore.domin.entity.Pokemon
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 /**
@@ -13,13 +17,14 @@ class PokemonRepositoryImp @Inject constructor(val pokemonApiService: PokemonApi
     PokemonRepository {
 
 
-    override suspend fun getAllPokemons(): List<Pokemon> {
-        val response = pokemonApiService.getPokemons()
-        if (response.isSuccessful)
-            return response.body()?.toEntity().orEmpty()
-        else
-            throw Exception("Failed To Get Data")
+    override fun getAllPokemons(): Flow<PagingData<Pokemon>> {
+        return Pager(
+            config = PagingConfig(pageSize = 50),
+            initialKey = null,
+            pagingSourceFactory = {
+                PokemonPagingSource(
+                    pokemonApiService
+                )
+            }).flow
     }
-
-
 }

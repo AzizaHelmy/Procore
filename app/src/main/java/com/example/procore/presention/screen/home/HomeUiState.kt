@@ -12,9 +12,7 @@ data class HomeUiState(
     val error: String = ""
 )
 
-data class PokemonUiState(val image: String)
+data class PokemonUiState(val image: String = "")
 
 
-fun List<Pokemon>.toUiState() = this.map {
-    PokemonUiState(image = it.image)
-}
+fun Pokemon.toUiState() = PokemonUiState(image = image)

@@ -1,5 +1,8 @@
 package com.example.procore.data.source.remote.network
 
+
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -10,10 +13,18 @@ object PokemonRetrofitClient {
 
     const val BASE_URL = "https://api.pokemontcg.io/v2/"
 
-     fun create(): PokemonApiService {
+    fun create(): PokemonApiService {
+
+        val loggingInterceptor = HttpLoggingInterceptor()
+        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+
+        val client = OkHttpClient.Builder().apply {
+            addInterceptor(loggingInterceptor)
+        }.build()
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(BASE_URL)
+            .client(client)
             .build().create<PokemonApiService>(PokemonApiService::class.java)
     }
 }
