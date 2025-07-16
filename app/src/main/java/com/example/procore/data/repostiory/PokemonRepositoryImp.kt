@@ -13,8 +13,8 @@ class PokemonRepositoryImp @Inject constructor(val pokemonApiService: PokemonApi
     PokemonRepository {
 
 
-    override suspend fun getAllPokemons(): List<Pokemon> {
-        val response = pokemonApiService.getPokemons()
+    override suspend fun getAllPokemons(page: Int): List<Pokemon> {
+        val response = pokemonApiService.getPokemons(page)
         if (response.isSuccessful)
             return response.body()?.toEntity().orEmpty()
         else

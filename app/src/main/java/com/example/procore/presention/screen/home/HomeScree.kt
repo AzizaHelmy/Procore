@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -27,17 +28,19 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil3.compose.AsyncImage
 import com.example.procore.R
 import com.example.procore.presention.theme.DarkYellow
@@ -47,16 +50,15 @@ import com.example.procore.presention.theme.DarkYellow
  */
 
 
-
 @Composable
 fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state = viewModel.pokemons.collectAsLazyPagingItems()
     HomeContent(state)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeContent(uiState: HomeUiState) {
+fun HomeContent(uiState: LazyPagingItems<PokemonUiState>) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -74,18 +76,25 @@ fun HomeContent(uiState: HomeUiState) {
                 .padding(paddingValues)
                 .background(Color.Black)
         ) {
-            when {
-                uiState.isLoading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = Color.Yellow)
-                uiState.isError -> ErrorMessage(uiState.error)
-                uiState.pokemons.isEmpty() -> EmptyState()
-                else -> PokemonGrid(pokemons = uiState.pokemons)
+
+            val loadState = uiState.loadState
+            when (loadState.refresh) {
+                is LoadState.Loading -> CircularProgressIndicator(
+                    modifier = Modifier.align(
+                        Alignment.Center
+                    ), color = Color.Yellow
+                )
+
+                is LoadState.Error -> ErrorMessage("Error!")
+                else -> PokemonGrid(pokemons = uiState)
             }
+
         }
     }
 }
 
 @Composable
-private fun PokemonGrid(pokemons: List<PokemonUiState>) {
+private fun PokemonGrid(pokemons: LazyPagingItems<PokemonUiState>) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(4),
         modifier = Modifier.fillMaxSize(),
@@ -93,8 +102,33 @@ private fun PokemonGrid(pokemons: List<PokemonUiState>) {
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(pokemons.size) { index ->
-            PokemonCard(pokemon = pokemons[index])
+        items(pokemons.itemCount) { index ->
+            PokemonCard(pokemon = pokemons[index] ?: PokemonUiState())
+        }
+        if (pokemons.loadState.append is LoadState.Loading) {
+            item(span = { GridItemSpan(4) }) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = Color.Yellow)
+                }
+            }
+        }
+
+        if (pokemons.loadState.append is LoadState.Error) {
+            item(span = { GridItemSpan(4) }) {
+                Text(
+                    text = "Error loading more Pokémon!",
+                    color = Color.Red,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
         }
     }
 }
@@ -116,8 +150,8 @@ private fun PokemonCard(pokemon: PokemonUiState) {
                     .weight(1f)
                     .fillMaxWidth(),
                 contentScale = ContentScale.Crop,
-               placeholder = painterResource(R.drawable.img_placholder),
-               error = painterResource(R.drawable.img_placholder)
+                placeholder = painterResource(R.drawable.img_placholder),
+                error = painterResource(R.drawable.img_placholder)
             )
         }
     }
@@ -176,11 +210,11 @@ fun HomePreview() {
         )
     }
 
-    HomeContent(
+    /*HomeContent(
         HomeUiState(
             pokemons = samplePokemons,
             isLoading = false
         )
-    )
+    )*/
 }
 
